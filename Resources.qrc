@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/missing-texture.png</file>
+        <file>Resources/frame-android-medium.png</file>
+        <file>Resources/frame-android-small.png</file>
+        <file>Resources/frame-android-xsmall.png</file>
+        <file>Resources/frame-ipad.png</file>
+        <file>Resources/frame-iphone.png</file>
+        <file>Resources/frame-iphone5.png</file>
+        <file>Resources/header-bg.png</file>
+        <file>Resources/CocosBuilderIcon.png</file>
+        <file>Resources/Icon.icns</file>
+        <file>Resources/Template.xml</file>
+    </qresource>
+</RCC>

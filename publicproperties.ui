@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PublicProperties</class>
+ <widget class="QWidget" name="PublicProperties">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>250</width>
+    <height>466</height>
+   </rect>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>属性</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>属性</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="7" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_7">
+        <property name="dragEnabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Z</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_9"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="lineEdit_4">
+        <property name="minimumSize">
+         <size>
+          <width>10</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Scale</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="minimumSize">
+         <size>
+          <width>83</width>
+          <height>21</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>SelectSprite</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Anchor Point</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_11"/>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_3"/>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="minimumSize">
+         <size>
+          <width>83</width>
+          <height>21</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>NormalSprite</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_8"/>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_6"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>offY</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_2"/>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEdit_5"/>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Selector</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>offX</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>DisableSprite</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>tag</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="lineEdit_10">
+        <property name="minimumSize">
+         <size>
+          <width>10</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+     </layout>
+     <zorder>lineEdit_8</zorder>
+     <zorder>label</zorder>
+     <zorder>label_7</zorder>
+     <zorder>lineEdit_3</zorder>
+     <zorder>lineEdit_4</zorder>
+     <zorder>lineEdit</zorder>
+     <zorder>label_6</zorder>
+     <zorder>lineEdit_7</zorder>
+     <zorder>lineEdit_11</zorder>
+     <zorder>label_2</zorder>
+     <zorder>lineEdit_9</zorder>
+     <zorder>label_8</zorder>
+     <zorder>lineEdit_2</zorder>
+     <zorder>lineEdit_10</zorder>
+     <zorder>lineEdit_6</zorder>
+     <zorder>lineEdit_5</zorder>
+     <zorder>label_4</zorder>
+     <zorder>label_3</zorder>
+     <zorder>label_9</zorder>
+     <zorder>label_5</zorder>
+     <zorder>label_10</zorder>
+     <zorder>comboBox</zorder>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

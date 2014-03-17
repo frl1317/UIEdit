@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+    <ui>
+        <property name="id" type="string" value="NULL"/>
+        <property name="hide" type="bool" value="false"/>
+        <property name="z" type="int" value="0"/>
+        <property name="hideRelease" type="bool" value="false"/>
+        <property name="textLength" type="textLength" value=""/>
+    </ui>
+
+    <script>
+        <property name="include" type="string" value="ui/ToolFun.lua;"/>
+    </script>
+
+    <View>
+        <property name="id" type="string" value="NULL"/>
+        <property name="z" type="int" value="0"/>
+        <property name="color" type="string" value="-1"/>
+        <property name="touch" type="bool" value="true"/>
+        <property name="width" type="string" value="100%"/>
+        <property name="height" type="string" value="100%"/>
+        <property name="angle" type="string" value="0"/>
+        <property name="adaptive" type="bool" value="false"/>
+        <property name="grey" type="bool" value="false"/>
+        <property name="point" type="string" value="LEFTTOP"/>
+        <property name="relativePoint" type="string" value="LEFTTOP"/>
+        <property name="relativeTo" type="string" value=""/>
+        <property name="offsetX" type="string" value="0"/>
+        <property name="offsetY" type="string" value="0"/>
+        <property name="x" type="int" value="0"/>
+        <property name="y" type="int" value="0"/>
+        <property name="hide" type="bool" value="false"/>
+        <property name="needClip" type="bool" value="false"/>
+        <property name="onUpdate" type="string" value=""/>
+        <property name="checkMoveEvent" type="string" value=""/>
+    </View>
+
+    <Image>
+        <parent class="view"/>
+        <property name="src" type="string" value=""/>
+        <property name="spareSrc" type="string" value=""/>
+        <property name="mode" type="string" value=""/>
+        <property name="flipV" type="bool" value="false"/>
+        <property name="flipH" type="string" value="false"/>
+        <property name="align" type="int" value=""/>
+        <property name="fillColor" type="string" value="FF000000"/>
+        <property name="parameteri" type="bool" value=""/>
+    </Image>
+
+    <editor>
+        <parent class="view"/>
+        <property name="fontSize" type="uint" value="20"/>
+        <property name="fontName" type="string" value=""/>
+        <property name="maxLength" type="int" value="20"/>
+        <property name="type" type="string" value=""/>
+        <property name="text" type="string" value=""/>
+        <property name="willShow" type="string" value=""/>
+        <property name="willHide" type="string" value=""/>
+        <property name="done" type="bool" value="true"/>
+        <property name="ondone" type="string" value=""/>
+        <property name="onChange" type="string" value=""/>
+        <property name="align" type="string" value="center"/>
+        <property name="returnType" type="string" value=""/>
+        <property name="next" type="string" value=""/>
+        <property name="multLine" type="bool" value="false"/>
+    </editor>
+
+    <checkBox>
+        <parent class="view"/>
+        <property name="normalImage" type="string" value=""/>
+        <property name="onChecked" type="string" value=""/>
+        <property name="checkedImage" type="string" value=""/>
+        <property name="checked" type="bool" value="false"/>
+    </checkBox>
+
+    <button>
+        <parent class="view"/>
+        <property name="backImage" type="string" value=""/>
+        <property name="model" type="string" value=""/>
+        <property name="textImage" type="string" value=""/>
+        <property name="onClick" type="string" value=""/>
+        <property name="onHold" type="string" value=""/>
+        <property name="onRelease" type="string" value=""/>
+        <property name="repeat" type="bool" value=""/>
+        <property name="fontSize" type="int" value="20"/>
+        <property name="fontName" type="string" value=""/>
+        <property name="text" type="string" value=""/>
+        <property name="textColor" type="string" value=""/>
+        <property name="pressedEffectImage" type="string" value=""/>
+        <property name="textOffsetX" type="int" value=""/>
+        <property name="textOffsetY" type="int" value=""/>
+        <property name="spareImg" type="string" value=""/>
+        <property name="spareTextImg" type="string" value=""/>
+    </button>
+    
+    <window>
+        <parent class="view"/>
+        <property name="backImage" type="string" value=""/>
+        <property name="fX" type="int" value=""/>
+        <property name="fY" type="int" value=""/>
+        <property name="fW" type="int" value=""/>
+        <property name="fH" type="int" value=""/>
+        <property name="fC" type="string" value="0xA0000000"/>
+        <property name="fontSize" type="int" value="20"/>
+        <property name="fontName" type="int" value=""/>
+        <property name="title" type="string" value=""/>
+        <property name="titleOffsetY" type="int" value="36"/>
+    </window>
+    
+    <LinearLayout>
+        <parent class="view"/>
+        <property name="DividerWidth" type="int" value="0"/>
+        <property name="DividerHeight" type="int" value="0"/>
+        <property name="bLine" type="bool" value="false"/>
+        <property name="bReverse" type="bool" value="false"/>
+        <property name="style" type="string" value="vertical"/>
+    </LinearLayout>
+
+    <group>
+        <parent class="view"/>
+        <property name="fillColor" type="string" value="0xC0130E06"/>
+        <property name="lineColor" type="string" value="0xFF9F9B93"/>
+        <property name="roundRect" type="bool" value="true"/>
+        <property name="corner" type="int" value="8"/>
+        <property name="mode" type="string" value=""/>
+    </group>
+    
+    <label>
+        <parent class="view"/>
+        <property name="align" type="string" value="left"/>
+        <property name="runModel" type="bool" value="false"/>
+        <property name="nowState" type="int" value="0"/>
+        <property name="isCaptcha" type="string" value=""/>
+        <property name="Rule" type="string" value="11_11_00"/>
+        <property name="text" type="string" value=""/>
+        <property name="fontSize" type="int" value="20"/>
+        <property name="fontName" type="string" value=""/>
+    </label>
+    
+    <richText>
+        <parent class="view"/>
+        <property name="bindTo" type="string" value=""/>
+        <property name="center" type="bool" value="false"/>
+        <property name="ScrollColor" type="int" value="0"/>
+        <property name="isCheckAscii" type="bool" value="false"/>
+        <property name="lineSpace" type="int" value="0"/>
+        <property name="text" type="string" value=""/>
+        <property name="fontSize" type="uint" value="20"/>
+        <property name="fontName" type="string" value=""/>
+        <property name="color" type="string" value="FF000000"/>
+        <property name="link" type="string" value=""/>
+    </richText>
+    
+    <Line>
+        <parent class="view"/>
+        <property name="dir" type="int" value="0"/>
+    </Line>
+    
+    <NumericLeftRight>
+        <parent class="view"/>
+        <property name="btnWidth" type="int" value="0"/>
+        <property name="btnHeight" type="int" value="0"/>
+        <property name="btnLeft" type="int" value=""/>
+        <property name="btnRight" type="int" value=""/>
+        <property name="label" type="string" value=""/>
+    </NumericLeftRight>
+    
+    <progressbar>
+        <parent class="view"/>
+        <property name="backImage" type="string" value=""/>
+        <property name="frontImage" type="string" value=""/>
+        <property name="fontName" type="string" value=""/>
+        <property name="type" type="string" value="none"/>
+        <property name="align" type="string" value="center"/>
+    </progressbar>
+    
+    <scrollview>
+        <parent class="view"/>
+        <property name="Horizontal" type="bool" value="false"/>
+        <property name="HVRoll" type="bool" value="false"/>
+        <property name="ScrollColor" type="string" value="0xFFBAB9B9"/>
+        <property name="drag" type="bool" value="true"/>
+        <property name="isDrawLine" type="bool" value="true"/>
+    </scrollview>
+
+    
+    <radiobutton>
+        <parent class="view"/>
+        <property name="onClick" type="string" value=""/>
+        <property name="background" type="string" value=""/>
+        <property name="mode" type="string" value=""/>
+    </radiobutton>
+    
+    <switchbutton>
+        <parent class="view"/>
+        <property name="backImage" type="string" value=""/>
+        <property name="switchOff" type="string" value=""/>
+        <property name="switchOn" type="string" value=""/>
+        <property name="sliderImageOn" type="string" value=""/>
+        <property name="sliderImageOff" type="string" value=""/>
+        <property name="switchRatio" type="string" value=""/>
+        <property name="touchRange" type="string" value=""/>
+        <property name="type" type="string" value=""/>
+        <property name="limitValue" type="int" value=""/>
+        <property name="drawValue" type="bool" value="false"/>
+        <property name="valueOffsetY" type="int" value="0"/>
+        <property name="sliderOffsetY" type="int" value="0"/>
+        <property name="valueOffsetX" type="int" value="0"/>
+        <property name="minValue" type="int" value="0"/>
+    </switchbutton>
+    
+    <scrollScaleHView>
+        <parent class="view"/>
+        <property name="itemMaxWidth" type="int" value="0"/>
+        <property name="itemOffx" type="string" value=""/>
+        <property name="itemScanle" type="float" value=""/>
+        <property name="isAutoMove" type="bool" value="false"/>
+        <property name="isLoopMove" type="bool" value="false"/>
+    </scrollScaleHView>
+    
+    <PuzzleView>
+        <parent class="view"/>
+        <property name="itemMaxWidth" type="int" value="0"/>
+        <property name="itemOffx" type="string" value=""/>
+        <property name="itemScanle" type="float" value=""/>
+        <property name="isAutoMove" type="bool" value="false"/>
+        <property name="isLoopMove" type="bool" value="false"/>
+    </PuzzleView>
+    
+    <propGrid>
+        <parent class="radiobutton"/>
+        <property name="numalign" type="string" value="BOTTOM"/>
+        <property name="wall" type="int" value="0"/>
+        <property name="fontName" type="string" value=""/>
+    </propGrid>
+    
+    <package>
+        <parent class="view"/>
+        <property name="gridWidth" type="int" value="69"/>
+        <property name="gridHeight" type="int" value="69"/>
+        <property name="gridImage" type="string" value="ui/window/blank1%s.png"/>
+        <property name="colCount" type="int" value="4"/>
+        <property name="space" type="int" value="10"/>
+        <property name="onPropGridClick" type="string" value="onPropGridSelect"/>
+        <property name="count" type="int" value="20"/>
+        <property name="isParticle" type="bool" value="false"/>
+    </package>
+    
+    <ComboBox>
+        <parent class="view"/>
+        <property name="itemWidth" type="int" value="100"/>
+        <property name="itemHeight" type="int" value="36"/>
+        <property name="space" type="int" value="2"/>
+        <property name="onItemClick" type="string" value="onSelect"/>
+        <property name="text" type="string" value=""/>
+        <property name="normalImage" type="string" value=""/>
+        <property name="pressedImage" type="string" value=""/>
+    </ComboBox>
+    
+    <RImage>
+        <parent class="image"/>
+    </RImage>
+
+    <HeadImage>
+        <parent class="view"/>
+        <property name="src" type="string" value=""/>
+        <property name="Scale" type="bool" value="false"/>
+        <property name="align" type="string" value="VCENTER|HCENTER"/>
+        <property name="isMirror" type="bool" value="false"/>
+    </HeadImage>
+
+    <effectview>
+        <parent class="view"/>
+        <property name="action" type="string" value=""/>
+        <property name="motionID" type="string" value=""/>
+        <property name="loopCount" type="string" value=""/>
+        <property name="offsetY" type="int" value="0"/>
+        <property name="scanl" type="float" value="1.0"/>
+        <property name="color" type="string" value="-1"/>
+        <property name="finishScript" type="string" value="AnimationFinish"/>
+    </effectview>
+
+    <moveView>
+        <parent class="view"/>
+        <property name="canMove" type="bool" value="false"/>
+    </moveView>
+
+    <MiniMap>
+        <parent class="view"/>
+        <property name="scale" type="float" value="0.0"/>
+        <property name="backImage" type="string" value=""/>
+    </MiniMap>
+
+    <GlobalMap>
+        <parent class="view"/>
+    </GlobalMap>
+
+    <newTask>
+        <parent class="view"/>
+    </newTask>
+
+    <roleHeadSelect>
+        <parent class="view"/>
+    </roleHeadSelect>
+
+    <memoryDebug>
+        <parent class="view"/>
+    </memoryDebug>
+
+    <ParticleView>
+        <parent class="view"/>
+        <property name="action" type="string" value=""/>
+        <property name="loopCount" type="string" value=""/>
+        <property name="ParticleOffsetX" type="string" value=""/>
+        <property name="ParticleOffsetY" type="string" value=""/>
+        <property name="finishScript" type="string" value="ParticleFinish"/>
+        <property name="isMirro" type="bool" value="false"/>
+    </ParticleView>
+</Template>
