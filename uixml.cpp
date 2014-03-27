@@ -2,10 +2,11 @@
 #include <QFile>
 #include "view.h"
 
-UIXML::UIXML(QSize size):
-    size(size)
+UIXML::UIXML()
 {
     //this->setText(0, "UIXML");
+    setClassName("ui");
+
 }
 
 UIXML::~UIXML()
@@ -13,7 +14,7 @@ UIXML::~UIXML()
 
 }
 
-bool UIXML::load(QXmlStreamReader &reader)
+bool UIXML::load(QXmlStreamReader &reader, QSize size)
 {
     if(reader.attributes().value("id").isEmpty() == false)
     {
@@ -26,27 +27,30 @@ bool UIXML::load(QXmlStreamReader &reader)
     if(reader.attributes().value("hideRelease").isEmpty() == false)
     {
     }
+    setText(0, id);
+    setText(1, "ui");
+
+    loadXML_BaseInfo(reader, size);
+    applyProperty();
 
     reader.readNext();
     while (!reader.atEnd()) {
         if (reader.isStartElement()) {
-            if (reader.name() == "script") {
-                skipUnknownElement(reader);
-            } else {
+            if(reader.name().toString() == "script"){
                 View *view = View::NewView(reader.name().toString());
-                addSubView(view);
-               // view->loadXML(reader, size, this);
+                this->addSubView(view);
+                view->loadXML_BaseInfo(reader, size);
+                view->script_code = reader.readElementText();
+            }else{
+                View *view = View::NewView(reader.name().toString());
+                this->addSubView(view);
+                view->loadXML(reader, size, this);
             }
         }else{
             reader.readNext();
         }
     }
-
     return true;
-}
-void UIXML::addSubView(View* view)
-{
-    view->setParentItem(this);
 }
 
 View* UIXML::findView(const QString &name)
@@ -82,4 +86,10 @@ void UIXML::skipUnknownElement(QXmlStreamReader &reader)
 
 void UIXML::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0)
 {
+}
+
+void UIXML::applyProperty()
+{
+    View::applyProperty();
+    setPos(-size.width()/2, -size.height()/2);
 }

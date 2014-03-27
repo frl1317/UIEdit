@@ -11,6 +11,7 @@ NewPropertyDialog::NewPropertyDialog(View *view):
     //l->addWidget( &browser, -1, Qt::AlignVCenter);
     l->addWidget(ui->buttonBox);
     //browser.showClassPropertyTemplate(view->getClassName());
+    //PropertyWidget::getInstance()->show
 }
 
 NewPropertyDialog::~NewPropertyDialog()

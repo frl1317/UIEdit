@@ -27,9 +27,7 @@ GameScene::GameScene(QObject *parent) :
 
    // addItem(&screenSprite);
 
-    setSceneSize(QSize(640, 960));
-
-    reset();
+    setSize(QSize(640, 960));
 }
 
 GameScene::GameScene(const QSize &size, QObject *parent) :
@@ -40,7 +38,7 @@ GameScene::GameScene(const QSize &size, QObject *parent) :
 
     //addItem(&screenSprite);
 
-    setSceneSize(size);
+    setSize(size);
 }
 
 GameScene::~GameScene()
@@ -48,9 +46,9 @@ GameScene::~GameScene()
     this->clear();
 }
 
-void GameScene::setSceneSize(const QSize &size)
+void GameScene::setSize(const QSize &size)
 {
-    sceneSize = size;
+    this->size = size;
     setSceneRect( -size.width(), -size.height(), size.width()*2, size.height()*2);
 
     if(size.width() == 320 && size.height() == 480){
@@ -109,7 +107,7 @@ void GameScene::setSceneSize(const QSize &size)
 void GameScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     QGraphicsScene::drawBackground(painter,rect);
-    painter->fillRect(-sceneSize.width()/2, -sceneSize.height()/2,sceneSize.width(),sceneSize.height(), QColor(255,255,255));
+    painter->fillRect(-size.width()/2, -size.height()/2,size.width(),size.height(), QColor(255,255,255));
 }
 void GameScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
@@ -125,30 +123,13 @@ void GameScene::addItem(QGraphicsItem *item)
     //signalAddItem(item);
 }
 
-void GameScene::groupLoad(QXmlStreamReader& reader)
+void GameScene::creatUI(const QString name)
 {
-    topView->propertyClear();
-    topView->setText(0, reader.attributes().value("id").toString());
+    topView = new UIXML();
+    topView->setText(0, name);
     topView->setText(1, "ui");
-    topView->loadXML_BaseInfo(reader, QSize());
-
-    reader.readNext();
-    while (!reader.atEnd()) {
-        if (reader.isStartElement()) {
-            if(reader.name().toString() == "script"){
-                View *view = View::NewView(reader.name().toString());
-                topView->addSubView(view);
-                view->loadXML_BaseInfo(reader, sceneSize);
-                view->script_code = reader.readElementText();
-            }else{
-                View *view = View::NewView(reader.name().toString());
-                topView->addSubView(view);
-                view->loadXML(reader, getSceneSize(), topView);
-            }
-        }else{
-            reader.readNext();
-        }
-    }
+    topView->propertyAdd("id", name);
+    addItem(topView);
 }
 
 void GameScene::skipUnknownElement(QXmlStreamReader &reader)
@@ -170,7 +151,7 @@ void GameScene::skipUnknownElement(QXmlStreamReader &reader)
 
 bool GameScene::readXML()
 {
-    readXML(getPath());
+    return readXML(getPath());
 }
 
 bool GameScene::readXML(const QString& xmlFile)
@@ -191,7 +172,8 @@ bool GameScene::readXML(const QString& xmlFile)
     while (!reader.atEnd()) {
         if (reader.isStartElement()) {
             if (reader.name() == "ui") {
-                groupLoad(reader);
+                this->creatUI();
+                topView->load(reader, size);
             } else {
                 reader.raiseError(tr("Not a valid book file"));
             }
@@ -216,7 +198,7 @@ bool GameScene::readXML(const QString& xmlFile)
 
 bool GameScene::saveXML()
 {
-    saveXML(getPath());
+    return saveXML(getPath());
 }
 
 bool GameScene::saveXML(const QString& xmlFile)
@@ -243,58 +225,68 @@ bool GameScene::saveXML(const QString& xmlFile)
     return true;
 }
 
-void GameScene::reset()
-{
-    clear();
-    topView = NULL;
-    topView = View::NewView("ui");
-    topView->propertyAdd( "id", QFileInfo(path).fileName().remove(".xml"));
-    topView->applyProperty();
-    this->addItem(topView);
-}
-
-//void GameScene::keyPressEvent(QKeyEvent *event)
+//void GameScene::reset()
 //{
-//    QGraphicsScene::keyPressEvent(event);
-//    QList<QGraphicsItem *>list = selectedItems();
-//    if(list.count() > 0)
+//    clear();
+//    if(topView)
 //    {
-//        int x = 0, y = 0;
-//        switch(event->key())
-//        {
-//        case Qt::Key_Control:
-//            break;
-//        case Qt::Key_Delete:
-//        case Qt::Key_Backspace:
-//            delete
-//            for( int i = list.count() - 1; i >= 0; i--){
-//                QGraphicsItem *item = (QGraphicsItem *)list.at(i);
-//                this->removeItem(item);
-//            }
-//            break;
-//        }
-//        for( int i = 0; i < list.count(); i++){
-//            View *view = (View *)list.at(i);
-//            int viewX = 0, viewY = 0;
-//            switch (view->getPosType()) {
-//            case View::FromParent:
-//                viewX = view->getPropertyByKey("offsetX").toFloat();
-//                viewY = view->getPropertyByKey("offsetY").toFloat();
-//                view->propertyUpdate("offsetX", QString::number(viewX + x));
-//                view->propertyUpdate("offsetY", QString::number(viewY + y));
-//                break;
-//            case View::Absolute:
-//                viewX = view->getPropertyByKey("x").toFloat();
-//                viewY = view->getPropertyByKey("y").toFloat();
-//                view->propertyUpdate("x", QString::number(viewX + x));
-//                view->propertyUpdate("y", QString::number(viewY + y));
-//                break;
-//            default:
-//                break;
-//            }
-//        }
+//        delete topView;
+//        topView = NULL;
 //    }
+//    topView = new UIXML();
+//    topView->propertyAdd( "id", QFileInfo(path).fileName().remove(".xml"));
+//    topView->applyProperty();
+//    this->addItem(topView);
 //}
+
+void GameScene::keyPressEvent(QKeyEvent *event)
+{
+    QGraphicsScene::keyPressEvent(event);
+    if(event->key() == Qt::Key_A || event->key() == Qt::Key_W || event->key() == Qt::Key_S || event->key() == Qt::Key_D)
+    {
+        int x = 0, y = 0;
+        switch (event->key()) {
+        case Qt::Key_A:
+            x = -1;
+            break;
+        case Qt::Key_W:
+            y = -1;
+            break;
+        case Qt::Key_S:
+            y = 1;
+            break;
+        case Qt::Key_D:
+            x = 1;
+            break;
+        default:
+            break;
+        }
+        QList<QGraphicsItem *>list = selectedItems();
+        if(list.count() > 0)
+        {
+            for( int i = 0; i < list.count(); i++){
+                View *view = (View *)list.at(i);
+                int viewX = 0, viewY = 0;
+                switch (view->getPosType()) {
+                case View::FromParent:
+                    viewX = view->getPropertyByKey("offsetX").toFloat();
+                    viewY = view->getPropertyByKey("offsetY").toFloat();
+                    view->propertyUpdate("offsetX", QString::number(viewX + x));
+                    view->propertyUpdate("offsetY", QString::number(viewY + y));
+                    break;
+                case View::Absolute:
+                    viewX = view->getPropertyByKey("x").toFloat();
+                    viewY = view->getPropertyByKey("y").toFloat();
+                    view->propertyUpdate("x", QString::number(viewX + x));
+                    view->propertyUpdate("y", QString::number(viewY + y));
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+}
 
 void GameScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {

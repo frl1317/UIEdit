@@ -12,22 +12,18 @@
 #include "scrollview.h"
 #include <QStyleOptionGraphicsItem>
 #include "uixml.h"
+#include "checkbox.h"
 
 View::View(QObject *parent):
     QGraphicsItem(),
     color(-1),
     className(QString())
 {
-    QGraphicsItem::setFlags(ItemIsSelectable);//|ItemIsMovable
+    QGraphicsItem::setFlags(ItemIsSelectable|ItemIsMovable);//
 }
 View::~View()
 {
-    while(propertys.count()>0)
-    {
-        MyProperty *p = propertys.at(0);
-        propertys.removeAt(0);
-        delete p;
-    }
+    propertyClear();
 }
 
 View* View::NewView(const QString& tag)
@@ -62,12 +58,14 @@ View* View::NewView(const QString& tag)
         view = new RichText();
     }else if( lowerTag == "scrollview"){
         view = new ScrollView();
+    }else if( lowerTag == "checkbox"){
+        view = new CheckBox();
     }else{
         view = new View();
     }
 
     view->setClassName(lowerTag);
-    view->setText( 0, "NULL");
+    view->setText( 0, "");
     view->setText( 1, lowerTag);
     view->QTreeWidgetItem::setFlags(view->QTreeWidgetItem::flags() | Qt::ItemIsUserCheckable);
     view->QTreeWidgetItem::setCheckState(0, Qt::Checked);
@@ -75,7 +73,7 @@ View* View::NewView(const QString& tag)
     return view;
 }
 
-void View::loadXML(QXmlStreamReader &reader, const QSize& contextSize, View* xml)
+void View::loadXML(QXmlStreamReader &reader, const QSize& contextSize, UIXML* xml)
 {
     this->group = xml;
     loadXML_BaseInfo(reader, contextSize);
@@ -138,12 +136,13 @@ void View::propertyUpdate(const QString &key, const QString &value)
             MyProperty *p = propertys.at(i);
             if(p->name == key){
                 p->value = value;
+                this->refresh();
                 break;
             }
         }
-        applyProperty();
     }
 }
+
 void View::propertyRemove(const QString &key)
 {
     for( int i = 0; i < propertys.count(); ++i)
@@ -151,7 +150,7 @@ void View::propertyRemove(const QString &key)
         MyProperty *p = propertys.at(i);
         if(p->name == key){
             propertys.removeAll(p);
-            applyProperty();
+            this->refresh();
             delete p;
             break;
         }
@@ -179,6 +178,7 @@ QString View::getPropertyByKey(const QString &key)
     }
     return NULL;
 }
+
 void View::applyProperty()
 {
     float x = 0, y = 0;
@@ -480,7 +480,7 @@ void View::addSubView(View *view)
     this->addChild(view);
     childItems().append(view);
     view->setParentItem(this);
-    view->applyProperty();
+    view->refresh();
 }
 
 void View::removeSubView(View *view)
@@ -558,4 +558,15 @@ View *View::copyView()
 QVariant View::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     return QGraphicsItem::itemChange( change, value);
+}
+
+
+void View::refresh()
+{
+    applyProperty();
+    for(int i = 0; i < childItems().count(); i++)
+    {
+        View *view = (View*)childItems().at(i);
+        view->refresh();
+    }
 }

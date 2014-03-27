@@ -5,6 +5,7 @@
 #include "newcontroldialog.h"
 #include <QFileDialog>
 #include "newpropertydialog.h"
+#include "uixml.h"
 
 #define MaxScreenCount 8
 
@@ -22,7 +23,7 @@ static const int screenSize[MaxScreenCount][2] =
 
 static View *copyView = NULL;
 
-UIEditWidget::UIEditWidget(QString file, QTreeWidget *outlineWidget,  PropertyWidget *propertyWidget, QWidget *parent):
+UIEditWidget::UIEditWidget(QWidget *parent):
     QWidget(parent),
     ui(new Ui::UIEditWidget),
       modify(false),
@@ -31,10 +32,7 @@ UIEditWidget::UIEditWidget(QString file, QTreeWidget *outlineWidget,  PropertyWi
 {
     ui->setupUi(this);
 
-    fileName = file;
-    scene = new GameScene();
-    scene->reset();
-    scene->readXML(fileName);
+    scene = new GameScene(this);
 
     //初始化视图缩放条
     ui->viewHSlider->setValue(100);
@@ -58,7 +56,7 @@ UIEditWidget::UIEditWidget(QString file, QTreeWidget *outlineWidget,  PropertyWi
     ui->view->setCacheMode(QGraphicsView::CacheBackground);
     ui->view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     ui->view->setDragMode(QGraphicsView::NoDrag);   //多选模式
-    //view->setDragMode(QGraphicsView::ScrollHandDrag); //小手模式
+    //ui->view->setDragMode(QGraphicsView::ScrollHandDrag); //小手模式
     ui->view->setAcceptDrops(true);
     connect(ui->view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
     connect( scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
@@ -66,13 +64,13 @@ UIEditWidget::UIEditWidget(QString file, QTreeWidget *outlineWidget,  PropertyWi
 
     this->setAcceptDrops(true);
 
-    this->propertywidget = propertyWidget;
-    this->outlinewidget = outlineWidget;
+    command = new QList<Operation*>();
 }
 
 UIEditWidget::~UIEditWidget()
 {
-    delete scene;
+    command->clear();
+    delete command;
     delete ui;
 }
 
@@ -84,7 +82,7 @@ void UIEditWidget::sceneSelectionChanged()
     {
         selectedView = (View*)list.at(0);
     }else{
-        selectedView = scene->topView;
+        selectedView = (View*)scene->topView;
     }
 
     showViewInfo(selectedView);
@@ -124,7 +122,7 @@ void UIEditWidget::on_doubleSpinBox_valueChanged(double arg1)
 
 void UIEditWidget::on_comboBox_currentIndexChanged(int index)
 {
-    scene->setSceneSize(QSize(screenSize[index][0], screenSize[index][1]));
+    scene->setSize(QSize(screenSize[index][0], screenSize[index][1]));
 }
 
 void UIEditWidget::on_viewHSlider_valueChanged(int value)
@@ -142,7 +140,7 @@ void UIEditWidget::customContextMenuRequested(QPoint point)
     QPointF scenePoint = ui->view->mapToScene(point.x(),point.y());
     QGraphicsItem *view = scene->itemAt( scenePoint, ui->view->transform());
     if(view == NULL){
-        view = scene->topView;
+        view = (QGraphicsItem *)scene->topView;
     }
 
     view->setSelected(true);
@@ -184,7 +182,7 @@ void UIEditWidget::addRelativeToView()
             View *parent = (View *)view->parentItem();
             int addIndex = -1;
             sub->propertyAdd("relativeTo", view->getID());
-            sub->propertyAdd("relativePoint", "RIGHT");
+            sub->propertyAdd("relativePoint", "LEFT");
             sub->propertyAdd("point", "LEFT");
             for( int i = 0; i < parent->childItems().count();i++){
                 View *itr = (View*)parent->childItems().at(i);
@@ -210,6 +208,7 @@ void UIEditWidget::addSubView()
         if(dialog.exec() == QDialog::Accepted){
             View *sub = dialog.buildView();
             view->addSubView(sub);
+            //command->append(new OperationAddItem(sub));
         }
     }
 }
@@ -218,16 +217,27 @@ void UIEditWidget::deleteSelectedView()
 {
     scene->clearSelection();
     View *view = (View *)outlinewidget->currentItem();
-    LOG(tr("删除")+view->getID());
-    if(view == scene->topView){
+    if(view == NULL)
+        return;
+    QString name = view->getID();
+    LOG(tr("删除")+name);
+    //command->append(new OperationDeleteItem(view));
+    if(view == (View *)getTopView()){
         outlinewidget->clearSelection();
-        scene->reset();
         outlinewidget->takeTopLevelItem(0);
-        outlinewidget->addTopLevelItem(scene->topView);
+        outlinewidget->addTopLevelItem((QTreeWidgetItem *)getTopView());
     }else{
         View *parenView = (View *)view->parentItem();
         parenView->removeSubView(view);
+        delete view;
+        view = NULL;
     }
+}
+
+void UIEditWidget::creatScene(const QString name)
+{
+    scene->clear();
+    scene->creatUI(name);
 }
 
 void UIEditWidget::refreshScene()
@@ -237,7 +247,6 @@ void UIEditWidget::refreshScene()
         View *view = (View *)items.next();
         view->applyProperty();
     }
-
 }
 
 void UIEditWidget::save(const QString &filename)
@@ -251,4 +260,36 @@ void UIEditWidget::save(const QString &filename)
 void UIEditWidget::save()
 {
     save(fileName);
+}
+
+bool UIEditWidget::load(QString &file)
+{
+    scene->readXML(file);
+
+    return true;
+}
+
+void UIEditWidget::setShowControl(PropertyWidget *propertywidget, QTreeWidget *outlinewidget)
+{
+    this->outlinewidget = outlinewidget;
+    this->propertywidget = propertywidget;
+}
+
+void UIEditWidget::keyPressEvent(QKeyEvent *event)
+{
+    QWidget::keyPressEvent(event);
+    if(event->key() == Qt::Key_Z && (event->modifiers() & Qt::ControlModifier)){
+//        if(command->count() > 0){
+//            Operation *o = command->last();
+//            o->undo();
+//            command->removeLast();
+//            o->destroy();
+//        }
+
+    }
+}
+
+void UIEditWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    QWidget::keyReleaseEvent(event);
 }

@@ -18,29 +18,32 @@
 #include "luaeditwidget.h"
 #include "qfileinfo.h"
 #include <QMessageBox>
+#include "uixml.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    copyView(NULL),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    copyView(NULL)
 {
     ui->setupUi(this);
 
+    //model.setFilter(QDir::AllDirs);
     model.setNameFilters( QStringList() << "*.xml");// << "*.lua"
     model.setNameFilterDisables(false);
-    ui->treeView->setModel(&model);
-    ui->treeView->setColumnHidden( 0, true);
-    ui->treeView->setColumnHidden( 1, true);
-    ui->treeView->setColumnHidden( 2, true);
-    ui->treeView->setColumnHidden( 3, true);
-    connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(treeViewClicked(const QModelIndex &)));
-    connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeViewContextMenu(QPoint)));
+    ui->fileTreeView->setModel(&model);
+    ui->fileTreeView->setColumnHidden( 0, true);
+    ui->fileTreeView->setColumnHidden( 1, true);
+    ui->fileTreeView->setColumnHidden( 2, true);
+    ui->fileTreeView->setColumnHidden( 3, true);
+    connect(ui->fileTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(treeViewClicked(const QModelIndex &)));
+    connect(ui->fileTreeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(treeViewContextMenu(QPoint)));
 
     loadIni();
 
     PropertyWidget *propertybrowser = PropertyWidget::getInstance();
     ui->dockWidget_2->setWidget(propertybrowser);
     connect( propertybrowser->variantManager, SIGNAL(valueChanged(QtProperty*,QVariant)), this, SLOT(propertyChanged(QtProperty*,QVariant)));
+    connect( propertybrowser->variantManager, SIGNAL(attributeChanged(QtProperty *, const QString, const QVariant)), this, SLOT(attributeChanged(QtProperty *, const QString, const QVariant)));
 
     //控制台输出
     PrintfDockWidget *dockWidget = PrintfDockWidget::getInstance();
@@ -93,6 +96,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionShowControls->setChecked(true);
     ui->actionShowControls->setCheckable(true);
     connect( ui->actionShowControls, SIGNAL(triggered(bool)), this, SLOT(showControls(bool)));
+
+    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 MainWindow::~MainWindow()
@@ -203,6 +208,20 @@ void MainWindow::propertyChanged(QtProperty* property,QVariant variant)
     }
 }
 
+void MainWindow::attributeChanged(QtProperty * _t1, const QString & _t2, const QVariant & _t3)
+{
+    qDebug()<< "attributeChanged" << _t1->propertyName() << "==>" << _t2;
+    PropertyWidget *propertybrowser = PropertyWidget::getInstance();
+    if(propertybrowser->currentView != NULL){
+        //qDebug() << property->propertyName() << "==>" <<  variant.toString();
+//        LOG(property->propertyName()+"==>"+variant.toString());
+//        if(propertybrowser->currentView->propertyContains(property->propertyName()))
+//            propertybrowser->currentView->propertyUpdate(property->propertyName(), variant.toString());
+//        else
+//            propertybrowser->currentView->propertyAdd(property->propertyName(), variant.toString());
+    }
+}
+
 void MainWindow::saveIni()
 {
     QString path = QDir::tempPath() + "/" + "game.ini";
@@ -237,8 +256,8 @@ void MainWindow::setResourcePath(const QString &path)
 {
     LOG("配置资源目录:" + path);
     ConfigFile::getInstance()->setResourcesPath(path);
-    ui->treeView->setRootIndex(model.setRootPath(path));
-    ui->treeView->setColumnHidden( 0, false);
+    ui->fileTreeView->setRootIndex(model.setRootPath(path));
+    ui->fileTreeView->setColumnHidden( 0, false);
     saveIni();
 }
 
@@ -273,7 +292,7 @@ void MainWindow::newLua()
     if(dlg.exec() == QDialog::Accepted){
         LuaEditWidget *luaedit = new LuaEditWidget();
         QString path = ConfigFile::getInstance()->getResourcesPath();
-        path = path + ui->treeView->currentIndex().data().toString();//获得当前右击事件的节点数据
+        path = path + ui->fileTreeView->currentIndex().data().toString();//获得当前右击事件的节点数据
         path = path +"/"+dlg.filename() + ".lua";
         luaedit->save(path);
 
@@ -290,10 +309,12 @@ void MainWindow::newUIXML()
     if(dlg.exec() == QDialog::Accepted){
         PropertyWidget *propertybrowser =PropertyWidget::getInstance();
         QString path = ConfigFile::getInstance()->getResourcesPath();
-        path = path + "/" + ui->treeView->currentIndex().data().toString();//获得当前右击事件的节点数据
+        path = path + "/" + ui->fileTreeView->currentIndex().data().toString();//获得当前右击事件的节点数据
         path = path +"/"+dlg.filename() + ".xml";
-        UIEditWidget *uiedit = new UIEditWidget(path, ui->treeWidget, propertybrowser, this);
-        uiedit->save();
+        UIEditWidget *uiedit = new UIEditWidget(this);
+        uiedit->setShowControl( propertybrowser, ui->treeWidget);
+        uiedit->creatScene(dlg.filename());
+        uiedit->save(path);
 
         QFileInfo info(path);
         uiedit->setWindowTitle(path);
@@ -304,7 +325,7 @@ void MainWindow::newUIXML()
 
 void MainWindow::deleteFile()
 {
-    QModelIndex index = ui->treeView->currentIndex();
+    QModelIndex index = ui->fileTreeView->currentIndex();
     if (model.fileInfo(index).isDir())
     {
         //删除目录
@@ -318,39 +339,26 @@ void MainWindow::treeViewClicked(const QModelIndex &index)
 {
     QString file = model.filePath(index);
     QFileInfo info(file);
-    bool isOpen = false;
-    int _index = 0;
-    for( int i = 0; i < ui->tabWidget->count(); i++){
-        if(ui->tabWidget->tabText(i) == info.fileName()){
-            isOpen = true;
-            _index = i;
-            break;
-        }
+    PropertyWidget *propertybrowser = PropertyWidget::getInstance();
+    QWidget *widget = NULL;
+    LOG("打开文件" + model.filePath(index));
+    if(file.contains(".xml") && file.contains("ui/")){  //ui-xml
+        UIEditWidget *uiedit = new UIEditWidget(this);
+        uiedit->setShowControl( propertybrowser, ui->treeWidget);
+        uiedit->load(file);
+        widget = uiedit;
+        ui->treeWidget->takeTopLevelItem(0);
+        ui->treeWidget->addTopLevelItem((QTreeWidgetItem *)uiedit->getTopView());
+    }else if(file.contains(".lua") || (file.contains(".xml") && file.contains("data/"))){          //lua
+        ui->treeWidget->takeTopLevelItem(0);
+        propertybrowser->clear();
+        widget = new LuaEditWidget(file, this);
     }
 
-    if(isOpen){
-        ui->tabWidget->setCurrentIndex(_index);
-        LOG("重复打开项目"+info.fileName());
-    }else{
-        PropertyWidget *propertybrowser = PropertyWidget::getInstance();
-        QWidget *widget = NULL;
-        LOG("打开文件" + model.filePath(index));
-        if(file.contains(".xml") && file.contains("ui/")){  //ui-xml
-            UIEditWidget *uiedit = new UIEditWidget(file, ui->treeWidget, propertybrowser, this);
-            ui->treeWidget->takeTopLevelItem(0);
-            ui->treeWidget->addTopLevelItem(uiedit->getTopView());
-            widget = uiedit;
-        }else if(file.contains(".lua") || (file.contains(".xml") && file.contains("data/"))){          //lua
-            ui->treeWidget->takeTopLevelItem(0);
-            propertybrowser->clear();
-            widget = new LuaEditWidget(file, this);
-        }
-
-        if(widget){
-            widget->setWindowTitle(file);
-            ui->tabWidget->addTab(widget, info.fileName());
-            ui->tabWidget->setCurrentWidget(widget);
-        }
+    if(widget){
+        widget->setWindowTitle(file);
+        ui->tabWidget->addTab(widget, info.fileName());
+        ui->tabWidget->setCurrentWidget(widget);
     }
 }
 
@@ -361,7 +369,8 @@ void MainWindow::currentChanged(int index)
     ui->treeWidget->takeTopLevelItem(0);
     if(widget && widget->windowTitle().contains(".xml") && widget->windowTitle().contains("ui/")){
         UIEditWidget *uiedit = (UIEditWidget *)widget;
-        ui->treeWidget->addTopLevelItem(uiedit->getTopView());
+        QTreeWidgetItem *topLevelItem = (QTreeWidgetItem *)uiedit->getTopView();
+        ui->treeWidget->addTopLevelItem(topLevelItem);
     }
 }
 void MainWindow::closeAllWindow()
@@ -500,10 +509,10 @@ void MainWindow::on_action_closeall_triggered()
 
 void MainWindow::treeViewContextMenu(QPoint point)
 {
-    QModelIndex index = ui->treeView->currentIndex();
+    QModelIndex index = ui->fileTreeView->currentIndex();
     if(index.isValid() == false)
         return;
-    QMenu *qMenu = new QMenu(ui->treeView);
+    QMenu *qMenu = new QMenu(ui->fileTreeView);
     if (model.fileInfo(index).isDir())
     {
         QAction* action1 = new QAction("&新建uixml",this);
@@ -527,3 +536,15 @@ void MainWindow::on_action_help_triggered()
     QMessageBox::information(NULL, tr("Error"), tr("1.首先配置项目工作目录,需要设置到资源目录(包括,ui，data).\n2.开始工作吧.\n\n注意!修改界面后请先clear下xcode项目工程!否则xcode不会更新资源!"));
 }
 
+
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+{
+//    if(arg1.isEmpty())
+//    {
+//        model.setNameFilters( QStringList() << "*.xml");// << "*.lua"
+//        model.setFilter(QDir::AllEntries);
+//    }else{
+//        model.setNameFilters( QStringList() << arg1+"*.xml");// << "*.lua"
+//        model.setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+//    }
+}

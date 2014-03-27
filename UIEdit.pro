@@ -38,7 +38,10 @@ SOURCES += main.cpp\
     propertyeditdockwidget.cpp \
     newfile.cpp \
     controlspaintwidget.cpp \
-    templatedata.cpp
+    templatedata.cpp \
+    functionclass.cpp \
+    operation.cpp \
+    checkbox.cpp
 
 HEADERS  += mainwindow.h \
     gamescene.h \
@@ -65,7 +68,10 @@ HEADERS  += mainwindow.h \
     propertyeditdockwidget.h \
     newfile.h \
     controlspaintwidget.h \
-    templatedata.h
+    templatedata.h \
+    functionclass.h \
+    operation.h \
+    checkbox.h
 
 FORMS    += mainwindow.ui \
     publicproperties.ui \
@@ -85,3 +91,6 @@ RESOURCES += \
 include(./qtpropertybrowser/qtpropertybrowser.pri)
 
 ICON = app.icns
+
+SUBDIRS += \
+    qt-qtmacextras/qtmacextras.pro

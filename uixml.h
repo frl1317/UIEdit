@@ -1,32 +1,24 @@
 #ifndef UIXML_H
 #define UIXML_H
 
-#include <Qt>
-#include <QXmlStreamReader>
-#include <QGraphicsItem>
-#include <QTreeWidgetItem>
+#include "view.h"
 
-class View;
-
-class UIXML : public QGraphicsItem
+class UIXML : public View
 {
 public:
-    UIXML(QSize size);
+    UIXML();
     ~UIXML();
 
-
-    bool load(QXmlStreamReader &reader);
+    bool load(QXmlStreamReader &reader, QSize size);
     void skipUnknownElement(QXmlStreamReader &reader);
 
     View* findView(const QString &name);
-    void addSubView(View* view);
 
     virtual QRectF boundingRect() const { return QRectF( 0, 0, size.width(), size.height());}
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-    QSize size;
+    virtual void applyProperty();
 private:
-    QString id;
 };
 
 #endif // UIXML_H

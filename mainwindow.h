@@ -35,6 +35,7 @@ private slots:
 
     void treeItemChanged(QTreeWidgetItem *item, int column);
     void propertyChanged(QtProperty* property,QVariant variant);
+    void attributeChanged(QtProperty * _t1, const QString & _t2, const QVariant & _t3);
     void clickedOutlineTreeItem(QModelIndex modelIndex);
     void treeWidgetContextMenu(QPoint point);
     void treeViewContextMenu(QPoint point);
@@ -62,6 +63,8 @@ private slots:
     void showProperty(bool b);
     void showControls(bool b);
     void on_action_help_triggered();
+    void on_lineEdit_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 

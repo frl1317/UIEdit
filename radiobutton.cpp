@@ -15,7 +15,6 @@ void RadioButton::applyProperty()
         onClick = prop;
     }
 
-
     prop = getPropertyByKey("background");
     if(prop.isEmpty() == false)
     {

@@ -27,11 +27,10 @@ public:
     bool saveXML();
     bool saveXML(const QString& xmlFile);
 
-    void groupLoad(QXmlStreamReader& reader);
     void skipUnknownElement(QXmlStreamReader &reader);
 
-    void setSceneSize(const QSize &size);
-    const QSize getSceneSize() {return sceneSize;}
+    void setSize(const QSize &size);
+    const QSize getSize() {return size;}
 
     const QString& getSceneName(){ return path;}
     void setSceneName(const QString &name){path = name;}
@@ -43,20 +42,23 @@ public:
 
     void addItem(QGraphicsItem *item);
 
-    void reset();
+    void creatUI(const QString name = 0);
 
-    View *topView;
+   // void reset();
 
+    UIXML *topView;
 
     virtual void dropEvent(QGraphicsSceneDragDropEvent *event);
     virtual void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     virtual void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
+
+    virtual void keyPressEvent(QKeyEvent *event);
 public slots:
 
 private:
     QString resourcePath;
     QString path;
-    QSize sceneSize;
+    QSize size;
 
     QImage backgroundImage;
     QImage foregroundImage;

@@ -16,7 +16,6 @@ public:
     explicit NewPropertyDialog(View *view);
     ~NewPropertyDialog();
 
-    //PropertyWidget browser;
 private:
     Ui::NewPropertyDialog *ui;
 };

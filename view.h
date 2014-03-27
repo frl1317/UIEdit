@@ -29,7 +29,7 @@ public:
 
     void saveXML(QXmlStreamWriter &writer);
     void saveXML_SubNode(QXmlStreamWriter &writer);
-    void loadXML(QXmlStreamReader &reader, const QSize& contextSize, View* xml);
+    void loadXML(QXmlStreamReader &reader, const QSize& contextSize, UIXML* xml);
     virtual void loadXML_BaseInfo(QXmlStreamReader &reader, const QSize& contextSize);
     virtual void loadXML_SubNode(QXmlStreamReader &reader);
     virtual void applyProperty();
@@ -44,7 +44,6 @@ public:
     void propertyClear();
     QString getPropertyByKey(const QString &key);
     QList<MyProperty*> getPropertys() const { return propertys;}
-
 
     View* find(const QString &name);
     QSize getSize(){ return size;}
@@ -92,22 +91,24 @@ public:
     const QString getRelativeTo() { return relativeTo;}
     const QPointF getOffsetPoint() { return offsetPoint;}
 
-    const void setConSize(const QSize size){ conSize = size;}
+    void setConSize(const QSize size) {  conSize = size;}
     void addSubView(View *view);
     void addSubViewByIndex(int index, View *view);
     void removeSubView(View *view);
 
     View *copyView();
 
-    View *getGroupView() { return group;}
-    void setGroupView(View *view) { group = view;}
+    UIXML *getGroupView() { return group;}
+    void setGroupView(UIXML *view) { group = view;}
+
+
+    virtual void refresh();
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
     QString script_code;
 public slots:
 protected:
-    View *group;
+    UIXML *group;
     QString className;
     QSize size;
     QString id;

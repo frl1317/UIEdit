@@ -2,6 +2,7 @@
 #define UIEDITWIDGET_H
 
 #include <QWidget>
+#include "operation.h"
 
 #include "gamescene.h"
 
@@ -14,19 +15,26 @@ class UIEditWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit UIEditWidget(QString file, QTreeWidget *outlineWidget,  PropertyWidget *propertyWidget, QWidget *parent = 0);
+    explicit UIEditWidget(QWidget *parent = 0);
     ~UIEditWidget();
 
-    View *getTopView() { return scene->topView;}
+    UIXML *getTopView() { return scene->topView;}
     bool isModify() { return modify;}
     const QString getFileName() { return fileName;}
     GameScene *scene;
 
     void showViewInfo(View *view);
     void refreshScene();
+    void creatScene(const QString name);
 
+    bool load(QString &file);
     void save();
     void save(const QString &filename);
+
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+
+    void setShowControl(PropertyWidget *propertywidget, QTreeWidget *outlinewidget);
 public slots:
     void addRelativeToView();
     void addSubView();
@@ -48,11 +56,11 @@ private slots:
 
 private:
     PropertyWidget *propertywidget;
-
     QTreeWidget *outlinewidget;
     Ui::UIEditWidget *ui;
     QString fileName;
     bool modify;
+    QList<Operation*> *command;
 };
 
 #endif // UIEDITWIDGET_H
